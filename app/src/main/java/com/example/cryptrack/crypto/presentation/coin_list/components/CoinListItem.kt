@@ -99,7 +99,7 @@ private fun CoinListItemPreview() {
                 TODO()
             },
             modifier = Modifier.background(
-                MaterialTheme.colorScheme.primaryContainer
+                MaterialTheme.colorScheme.background
             )
         )
     }

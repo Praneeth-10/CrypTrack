@@ -3,7 +3,7 @@ package com.example.cryptrack.crypto.presentation.models
 import android.icu.text.NumberFormat
 import androidx.annotation.DrawableRes
 import com.example.cryptrack.crypto.domain.Coin
-import com.example.cryptrack.util.getDrawableIdForCoin
+import com.example.cryptrack.core.presentation.util.getDrawableIdForCoin
 import java.util.Locale
 
 data class CoinUi(

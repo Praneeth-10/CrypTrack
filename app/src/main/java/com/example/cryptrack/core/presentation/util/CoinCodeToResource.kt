@@ -1,4 +1,4 @@
-package com.example.cryptrack.util
+package com.example.cryptrack.core.presentation.util
 
 import com.example.cryptrack.R
 

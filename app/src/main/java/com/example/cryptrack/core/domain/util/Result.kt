@@ -1,4 +1,4 @@
-package com.example.cryptrack.util
+package com.example.cryptrack.core.domain.util
 
 typealias DomainError = Error
 

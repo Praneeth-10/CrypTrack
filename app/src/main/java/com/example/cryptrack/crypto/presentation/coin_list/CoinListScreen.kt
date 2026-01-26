@@ -1,5 +1,7 @@
 package com.example.cryptrack.crypto.presentation.coin_list
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.cryptrack.crypto.presentation.coin_list.components.CoinListItem
@@ -22,7 +25,8 @@ import com.example.cryptrack.ui.theme.CrypTrackTheme
 @Composable
 fun CoinListScreen(
     coinListState: CoinListState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    context: Context
 ) {
     when(coinListState){
         is CoinListState.Loading -> {
@@ -49,9 +53,14 @@ fun CoinListScreen(
             }
             coinListState.coinList
         }
-        is CoinListState.Error -> TODO()
+        is CoinListState.Error -> {
+            Toast.makeText(context,coinListState.message, Toast.LENGTH_LONG).show()
+        }
 
-        is CoinListState.SelectedCoin -> TODO()
+        is CoinListState.SelectedCoin -> {
+            if (coinListState.selectedCoin != null)
+                Toast.makeText(context,coinListState.selectedCoin.name, Toast.LENGTH_LONG).show()
+        }
     }
 
 }
@@ -65,8 +74,9 @@ private fun CoinListScreenPreview () {
                 coinList = (1..10).map{
                     previewCoin.copy(id = it.toString())
                 }),
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
-            )
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            context = LocalContext.current
+        )
     }
 
 }

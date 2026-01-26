@@ -11,6 +11,8 @@ import com.example.cryptrack.crypto.domain.Coin
 import com.example.cryptrack.crypto.domain.CoinDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
 
 class RemoteCoinDataSource(
     private val httpClient: HttpClient
@@ -19,7 +21,9 @@ class RemoteCoinDataSource(
         return safeCall<CoinsResponseDto> {
             httpClient.get(
                 urlString = constructUrl("assets")
-            )
+            ){
+                header(key = HttpHeaders.Authorization, value = " Bearer 2b16c2ae8af20e65fe63cd6b4f2d8be300b86905a59d56bafa2b4118de186946")
+            }
 
         }.map { response ->
             response.data.map {

@@ -45,7 +45,7 @@ fun CoinListScreen(
                 items(items = coinListState.coinList){ coinUi ->
                     CoinListItem(
                         coinUi = coinUi,
-                        onClick = { TODO() },
+                        onClick = { Toast.makeText(context,coinUi.name, Toast.LENGTH_LONG).show() },
                         modifier = Modifier.fillMaxWidth()
                     )
                     HorizontalDivider()

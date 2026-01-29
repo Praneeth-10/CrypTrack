@@ -6,6 +6,7 @@ import com.example.cryptrack.core.domain.util.onError
 import com.example.cryptrack.core.domain.util.onSuccess
 import com.example.cryptrack.crypto.domain.CoinDataSource
 import com.example.cryptrack.crypto.presentation.models.toCoinUi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,11 @@ class CoinListViewModel(
                 initialValue = CoinListState.Loading
             )
 
+    /**
+     * Creating channel similar to shared Flows
+     */
+
+    private val _events = Channel<CoinListEvent>()
     /**
      * We load the coins or data only in view model not from any Activities or fragments.
      * WE LOAD it when the View Model is initiated for that screen.

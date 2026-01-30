@@ -24,10 +24,11 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = koinViewModel<CoinListViewModel>()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+                    val event = viewModel.events
                     CoinListScreen(
                         coinListState = state,
+                        events = event,
                         modifier = Modifier.padding(innerPadding),
-                        context = this
                     )
                 }
             }

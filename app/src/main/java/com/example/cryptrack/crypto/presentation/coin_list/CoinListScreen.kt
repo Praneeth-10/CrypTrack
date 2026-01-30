@@ -1,6 +1,5 @@
 package com.example.cryptrack.crypto.presentation.coin_list
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,39 +12,70 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.cryptrack.core.presentation.util.toString
 import com.example.cryptrack.crypto.presentation.coin_list.components.CoinListItem
 import com.example.cryptrack.crypto.presentation.coin_list.components.previewCoin
 import com.example.cryptrack.ui.theme.CrypTrackTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun CoinListScreen(
     coinListState: CoinListState,
+    events: Flow<CoinListEvent>,
     modifier: Modifier = Modifier,
-    context: Context
 ) {
-    when(coinListState){
+    /**
+     * For Error handling to be only collected once even after Configuration changes.
+     * No need to display the error message again.
+     */
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            events.collect {event ->
+                when(event){
+                    is CoinListEvent.Error -> {
+                        Toast.makeText(
+                            context,
+                            event.error.toString(context),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+    when (coinListState) {
         is CoinListState.Loading -> {
-            Box (
+            Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 CircularProgressIndicator()
             }
         }
+
         is CoinListState.CoinList -> {
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(items = coinListState.coinList){ coinUi ->
+                items(items = coinListState.coinList) { coinUi ->
                     CoinListItem(
                         coinUi = coinUi,
-                        onClick = { Toast.makeText(context,coinUi.name, Toast.LENGTH_LONG).show() },
+                        onClick = {
+                            Toast.makeText(context, coinUi.name, Toast.LENGTH_LONG).show()
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                     HorizontalDivider()
@@ -53,13 +83,14 @@ fun CoinListScreen(
             }
             coinListState.coinList
         }
+
         is CoinListState.Error -> {
-            Toast.makeText(context,coinListState.message, Toast.LENGTH_LONG).show()
+//            Toast.makeText(context, coinListState.message, Toast.LENGTH_LONG).show()
         }
 
         is CoinListState.SelectedCoin -> {
             if (coinListState.selectedCoin != null)
-                Toast.makeText(context,coinListState.selectedCoin.name, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, coinListState.selectedCoin.name, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -67,15 +98,15 @@ fun CoinListScreen(
 
 @PreviewLightDark
 @Composable
-private fun CoinListScreenPreview () {
+private fun CoinListScreenPreview() {
     CrypTrackTheme {
         CoinListScreen(
             coinListState = CoinListState.CoinList(
-                coinList = (1..10).map{
+                coinList = (1..10).map {
                     previewCoin.copy(id = it.toString())
                 }),
+            events = emptyFlow(),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            context = LocalContext.current
         )
     }
 

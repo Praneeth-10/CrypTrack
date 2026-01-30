@@ -10,8 +10,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,9 +31,13 @@ class CoinListViewModel(
 
     /**
      * Creating channel similar to shared Flows
+     * as we need to show the error message only once
      */
-
     private val _events = Channel<CoinListEvent>()
+    val events = _events.receiveAsFlow()
+
+
+
     /**
      * We load the coins or data only in view model not from any Activities or fragments.
      * WE LOAD it when the View Model is initiated for that screen.
@@ -60,6 +64,7 @@ class CoinListViewModel(
                     _state.update {
                         CoinListState.Error(message = error.name)
                     }
+                    _events.send(element = CoinListEvent.Error(error))
                 }
         }
     }

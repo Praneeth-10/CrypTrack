@@ -31,30 +31,9 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun CoinListScreen(
     coinListState: CoinListState,
-    events: Flow<CoinListEvent>,
     modifier: Modifier = Modifier,
 ) {
-    /**
-     * For Error handling to be only collected once even after Configuration changes.
-     * No need to display the error message again.
-     */
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(key1 = lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-            events.collect {event ->
-                when(event){
-                    is CoinListEvent.Error -> {
-                        Toast.makeText(
-                            context,
-                            event.error.toString(context),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-        }
-    }
     when (coinListState) {
         is CoinListState.Loading -> {
             Box(
@@ -105,7 +84,6 @@ private fun CoinListScreenPreview() {
                 coinList = (1..10).map {
                     previewCoin.copy(id = it.toString())
                 }),
-            events = emptyFlow(),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
         )
     }

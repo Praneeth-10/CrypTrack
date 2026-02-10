@@ -56,10 +56,6 @@ fun CoinListScreen(
             coinListState.coinList
         }
 
-        is CoinListState.Error -> {
-//            Toast.makeText(context, coinListState.message, Toast.LENGTH_LONG).show()
-        }
-
         is CoinListState.SelectedCoin -> {
             if (coinListState.selectedCoin != null)
                 Toast.makeText(context, coinListState.selectedCoin.name, Toast.LENGTH_LONG).show()

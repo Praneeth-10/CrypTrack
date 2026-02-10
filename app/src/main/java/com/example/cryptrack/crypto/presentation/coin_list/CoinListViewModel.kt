@@ -61,9 +61,6 @@ class CoinListViewModel(
                     }
                 }
                 .onError { error ->
-                    _state.update {
-                        CoinListState.Error(message = error.name)
-                    }
                     _events.send(element = CoinListEvent.Error(error))
                 }
         }

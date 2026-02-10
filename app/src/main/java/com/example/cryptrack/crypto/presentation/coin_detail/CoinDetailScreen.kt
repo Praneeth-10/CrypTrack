@@ -60,7 +60,6 @@ fun CoinDetailScreen(
         }
 
         is CoinListState.CoinList -> TODO()
-        is CoinListState.Error -> TODO()
         is CoinListState.SelectedCoin -> {
             val coin: CoinUi = coinListState.selectedCoin!!
             Column(

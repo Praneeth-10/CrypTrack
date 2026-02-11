@@ -24,6 +24,7 @@ import com.example.cryptrack.ui.theme.CrypTrackTheme
 @Composable
 fun CoinListScreen(
     coinListState: CoinListState,
+    onAction : (CoinListAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -46,7 +47,7 @@ fun CoinListScreen(
                     CoinListItem(
                         coinUi = coinUi,
                         onClick = {
-                            Toast.makeText(context, coinUi.name, Toast.LENGTH_LONG).show()
+                            onAction(CoinListAction.OnCoinClick(coinUi = coinUi))
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -73,6 +74,7 @@ private fun CoinListScreenPreview() {
                 coinList = (1..10).map {
                     previewCoin.copy(id = it.toString())
                 }),
+            onAction = {},
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
         )
     }

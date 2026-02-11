@@ -70,7 +70,16 @@ class CoinListViewModel(
     fun onAction(action : CoinListAction) {
         when(action){
             is CoinListAction.OnCoinClick -> {
-                TODO()
+                // Clicking the action, so showing a loading for a split second
+                _state.update {
+                    CoinListState.Loading
+                }
+                /**
+                 * updating the selected coin on click event in the list
+                 */
+                _state.update {
+                    CoinListState.SelectedCoin(selectedCoin = action.coinUi)
+                }
             }
             CoinListAction.OnRefresh -> {
                 loadCoins()

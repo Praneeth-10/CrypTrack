@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cryptrack.core.domain.util.onError
 import com.example.cryptrack.core.domain.util.onSuccess
 import com.example.cryptrack.crypto.domain.CoinDataSource
+import com.example.cryptrack.crypto.presentation.models.CoinUi
 import com.example.cryptrack.crypto.presentation.models.toCoinUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 
 class CoinListViewModel(
     private val coinDataSource: CoinDataSource
@@ -80,10 +82,32 @@ class CoinListViewModel(
                 _state.update {
                     CoinListState.SelectedCoin(selectedCoin = action.coinUi)
                 }
+
+                selectCoin(action.coinUi)
             }
             CoinListAction.OnRefresh -> {
                 loadCoins()
             }
+        }
+    }
+
+    private fun selectCoin(coinUi : CoinUi){
+        _state.update {
+            CoinListState.SelectedCoin(selectedCoin = coinUi)
+        }
+
+        viewModelScope.launch {
+            coinDataSource.getCoinHistory(
+                coinId = coinUi.id,
+                start = ZonedDateTime.now().minusDays(5),
+                end = ZonedDateTime.now()
+            )
+                .onSuccess { history ->
+                    println(history)
+                }
+                .onError { error ->
+                    _events.send(CoinListEvent.Error(error))
+                }
         }
     }
 }

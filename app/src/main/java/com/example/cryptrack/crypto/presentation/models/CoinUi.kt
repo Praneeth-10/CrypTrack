@@ -4,6 +4,7 @@ import android.icu.text.NumberFormat
 import androidx.annotation.DrawableRes
 import com.example.cryptrack.crypto.domain.Coin
 import com.example.cryptrack.core.presentation.util.getDrawableIdForCoin
+import com.example.cryptrack.crypto.presentation.coin_detail.DataPoint
 import java.util.Locale
 
 data class CoinUi(
@@ -14,7 +15,7 @@ data class CoinUi(
     val marketCapUsd: DisplayableNumber,
     val priceUsd: DisplayableNumber,
     val changePercent24Hr: DisplayableNumber,
-
+    val coinPriceHistory: List<DataPoint> = emptyList(),
     @param:DrawableRes @field:DrawableRes
     val iconRes: Int,
 )

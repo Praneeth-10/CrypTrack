@@ -47,19 +47,16 @@ fun CoinListScreen(
                     CoinListItem(
                         coinUi = coinUi,
                         onClick = {
-                            onAction(CoinListAction.OnCoinClick(coinUi = coinUi))
+                            onAction(CoinListAction.OnCoinClick(coinList = coinListState.coinList, coinUi = coinUi))
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
                     HorizontalDivider()
                 }
             }
-            coinListState.coinList
-        }
-
-        is CoinListState.SelectedCoin -> {
-            if (coinListState.selectedCoin != null)
+            if(coinListState.selectedCoin != null){
                 Toast.makeText(context, coinListState.selectedCoin.name, Toast.LENGTH_LONG).show()
+            }
         }
     }
 

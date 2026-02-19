@@ -49,13 +49,6 @@ class CoinListViewModel(
     private fun loadCoins() {
         viewModelScope.launch {
 
-            /**
-             * NOT Needed as we are already in the Loading Sate
-             */
-            _state.update {
-                CoinListState.Loading
-            }
-
             coinDataSource.getCoins()
                 .onSuccess { coins ->
                     _state.update {
@@ -74,18 +67,10 @@ class CoinListViewModel(
     fun onAction(action : CoinListAction) {
         when(action){
             is CoinListAction.OnCoinClick -> {
-                // Clicking the action, so showing a loading for a split second
-                _state.update {
-                    CoinListState.Loading
-                }
                 /**
                  * updating the selected coin on click event in the list
                  */
-                _state.update {
-                    CoinListState.SelectedCoin(selectedCoin = action.coinUi)
-                }
-
-                selectCoin(action.coinUi)
+                selectCoin(action.coinList,action.coinUi)
             }
             CoinListAction.OnRefresh -> {
                 loadCoins()
@@ -93,10 +78,7 @@ class CoinListViewModel(
         }
     }
 
-    private fun selectCoin(coinUi : CoinUi){
-        _state.update {
-            CoinListState.SelectedCoin(selectedCoin = coinUi)
-        }
+    private fun selectCoin(coinList: List<CoinUi>, coinUi: CoinUi){
 
         viewModelScope.launch {
             coinDataSource.getCoinHistory(
@@ -117,7 +99,7 @@ class CoinListViewModel(
                         }
 
                     _state.update {
-                        CoinListState.SelectedCoin(selectedCoin = coinUi.copy(
+                        CoinListState.CoinList(coinList = coinList ,selectedCoin = coinUi.copy(
                             coinPriceHistory = dataPoints
                         ))
                     }

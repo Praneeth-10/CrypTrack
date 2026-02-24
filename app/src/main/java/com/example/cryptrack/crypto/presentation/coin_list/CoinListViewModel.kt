@@ -8,10 +8,12 @@ import com.example.cryptrack.crypto.domain.CoinDataSource
 import com.example.cryptrack.crypto.presentation.coin_detail.DataPoint
 import com.example.cryptrack.crypto.presentation.models.CoinUi
 import com.example.cryptrack.crypto.presentation.models.toCoinUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -27,6 +29,7 @@ class CoinListViewModel(
     private val _state = MutableStateFlow<CoinListState>(CoinListState.Loading)
     val state: StateFlow<CoinListState> =
         _state.onStart { loadCoins() }
+            .flowOn(Dispatchers.Default)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000L),
